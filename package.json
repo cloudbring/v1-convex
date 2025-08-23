@@ -26,6 +26,8 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
+    "storybook": "storybook dev -p 6006",
+    "build:storybook": "storybook build",
     "test:storybook": "test-storybook",
     "test:all": "turbo run test:coverage test:e2e --parallel",
     "test:smoke": "playwright test tests/smoke",

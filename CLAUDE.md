@@ -216,8 +216,9 @@ bunx playwright test --debug         # Debug mode
 bunx playwright test --headed        # With browser UI
 
 # Component Tests (Storybook)
-bun run storybook                    # Start Storybook
-bun run test:storybook              # Run Storybook tests
+bun run storybook                    # Start Storybook dev server
+bun run build:storybook             # Build Storybook for production
+bun run test:storybook              # Run Storybook interaction tests
 
 # Monorepo Testing
 turbo run test                       # Test all packages
@@ -341,8 +342,8 @@ bun add -D @amiceli/vitest-cucumber
 # E2E testing
 bun add -D @playwright/test
 
-# Storybook
-bun add -D @storybook/react-vite @storybook/addon-vitest
+# Storybook with interaction testing
+bun add -D @storybook/react-vite @storybook/addon-vitest @storybook/addon-essentials @storybook/addon-interactions @storybook/addon-a11y @storybook/test-runner
 ```
 
 ---
