@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "convex dev --tail-logs",
     "setup": "convex dev --once && convex env set VALIDATE_ENV=true",
-    "seed": "convex dev --once && convex run init"
+    "seed": "convex dev --once && convex run init",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
   },
   "type": "module",
   "author": "",
@@ -19,5 +22,11 @@
     "convex-helpers": "^0.1.63",
     "openai": "^4.61.1",
     "standardwebhooks": "^1.0.0"
+  },
+  "devDependencies": {
+    "@v1/test-utils": "workspace:*",
+    "convex-test": "^0.0.30",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.2"
   }
 }

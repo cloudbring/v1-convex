@@ -24,7 +24,37 @@
       "cache": false
     },
     "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx", 
+        "convex/**/*.ts",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "vitest.config.ts"
+      ]
+    },
+    "test:unit": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/unit/**"],
+      "cache": true
+    },
+    "test:integration": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/integration/**"],
+      "cache": true
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
       "cache": false
+    },
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "outputs": ["test-results/**", "playwright-report/**"]
     },
     "clean": {
       "cache": false
