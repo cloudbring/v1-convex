@@ -28,12 +28,13 @@
       "outputs": ["coverage/**"],
       "cache": true,
       "inputs": [
-        "src/**/*.ts",
-        "src/**/*.tsx", 
+        "src/**/*.{ts,tsx}",
         "convex/**/*.ts",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "vitest.config.ts"
+        "**/*.{test,spec}.{ts,tsx}",
+        "**/*.feature",
+        "**/*.steps.ts",
+        "**/vitest*.config.{ts,js}",
+        "**/.storybook/**"
       ]
     },
     "test:unit": {

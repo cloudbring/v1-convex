@@ -17,7 +17,7 @@ export default defineConfig({
       name: 'chromium',
     },
     // Make sure to adjust this path to where your built Storybook is served
-    include: ['**/*.stories.?(m)[jt]s?(x)'],
-    setupFiles: ['./.storybook/vitest-setup.ts'],
+    include: ['**/*.stories.{js,jsx,ts,tsx,mdx}'],
+    setupFiles: ['./vitest-setup.ts'],
   },
 })

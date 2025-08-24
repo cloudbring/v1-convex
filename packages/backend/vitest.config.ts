@@ -4,7 +4,7 @@ import path from 'path'
 export default defineConfig({
   test: {
     name: 'backend',
-    environment: 'edge-runtime',
+    environment: 'jsdom', // needed for browser mocks in vitest.setup.ts
     setupFiles: ['./vitest.setup.ts'],
     globals: true,
     coverage: {

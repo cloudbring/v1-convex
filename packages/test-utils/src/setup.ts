@@ -1,4 +1,5 @@
 import { vi } from 'vitest'
+import { createElement } from 'react'
 
 /**
  * Global test setup utilities
@@ -19,18 +20,12 @@ export function setupGlobalMocks() {
     }
   })
 
-  // Mock window.location
-  delete (global as any).window.location
-  global.window.location = {
-    href: 'http://localhost:3000',
-    origin: 'http://localhost:3000',
-    pathname: '/',
-    search: '',
-    hash: '',
-    assign: vi.fn(),
-    replace: vi.fn(),
-    reload: vi.fn()
-  } as any
+  // Mock window.location methods safely
+  if (typeof window !== 'undefined' && window.location) {
+    vi.spyOn(window.location, 'assign').mockImplementation(() => {})
+    vi.spyOn(window.location, 'replace').mockImplementation(() => {})
+    vi.spyOn(window.location, 'reload').mockImplementation(() => {})
+  }
 
   // Mock localStorage
   const mockStorage = {
@@ -42,13 +37,8 @@ export function setupGlobalMocks() {
     key: vi.fn()
   }
   
-  Object.defineProperty(global, 'localStorage', {
-    value: mockStorage
-  })
-  
-  Object.defineProperty(global, 'sessionStorage', {
-    value: mockStorage
-  })
+  Object.defineProperty(global, 'localStorage', { value: { ...mockStorage } })
+  Object.defineProperty(global, 'sessionStorage', { value: { ...mockStorage } })
 
   // Mock fetch
   global.fetch = vi.fn()
@@ -98,16 +88,13 @@ export function setupNextJsMocks() {
   }))
 
   vi.mock('next/image', () => ({
-    default: ({ src, alt, ...props }: any) => (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={src} alt={alt} {...props} />
-    )
+    default: ({ src, alt, ...props }: any) =>
+      createElement('img', { src, alt, ...props })
   }))
 
   vi.mock('next/link', () => ({
-    default: ({ children, ...props }: any) => (
-      <a {...props}>{children}</a>
-    )
+    default: ({ children, ...props }: any) =>
+      createElement('a', { ...props }, children)
   }))
 }
 

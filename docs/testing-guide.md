@@ -122,7 +122,7 @@ bun add -D convex-test @edge-runtime/vm
 
 ```typescript
 // packages/backend/convex/users.test.ts
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { convexTest } from 'convex-test'
 import { api, internal } from './_generated/api'
 import schema from './schema'
@@ -617,9 +617,9 @@ bun run test:coverage
 bun add -D convex-test @edge-runtime/vm
 
 # Ensure vitest config includes:
-server: {
+test: {
   deps: {
-    inline: ["convex-test"]
+    inline: ['convex-test']
   }
 }
 ```

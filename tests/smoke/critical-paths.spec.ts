@@ -2,6 +2,13 @@ import { test, expect } from '@playwright/test'
 
 test.describe('Smoke Tests - Critical Paths', () => {
   test('should load home page successfully', async ({ page }) => {
+    // Capture console errors during navigation and load
+    const errors: string[] = []
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        errors.push(msg.text())
+      }
+    })
     await page.goto('/')
     
     // Check that the page loads without errors
@@ -10,14 +17,6 @@ test.describe('Smoke Tests - Critical Paths', () => {
     // Check for essential elements
     const header = page.locator('header').or(page.locator('[data-testid="header"]'))
     await expect(header).toBeVisible()
-    
-    // Check that no console errors occurred
-    const errors: string[] = []
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text())
-      }
-    })
     
     await page.waitForLoadState('networkidle')
     expect(errors.length).toBe(0)

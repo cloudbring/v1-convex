@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { convexTest } from 'convex-test'
 import { api, internal } from './_generated/api'
 import schema from './schema'
-import { createTestUser, seedTestData } from '@v1/test-utils/convex'
+import { createTestUser } from '@v1/test-utils/convex-helpers'
 
 describe('Users Functions', () => {
   let t: ReturnType<typeof convexTest>

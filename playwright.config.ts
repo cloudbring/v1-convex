@@ -83,7 +83,7 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: process.env.CI ? undefined : {
+  webServer: {
     command: 'bun run dev:app',
     port: 3000,
     reuseExistingServer: !process.env.CI,

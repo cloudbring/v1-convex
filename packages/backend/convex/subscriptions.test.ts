@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { convexTest } from 'convex-test'
 import { api } from './_generated/api'
 import schema from './schema'
-import { createTestUser } from '@v1/test-utils/convex'
+import { createTestUser } from '@v1/test-utils/convex-helpers'
 
 // Mock the Polar component
 vi.mock('@convex-dev/polar', () => ({

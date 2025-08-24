@@ -6,7 +6,7 @@ import { createTestUser, seedTestData } from '@v1/test-utils/convex'
 import { api } from '@v1/backend/convex/_generated/api'
 import schema from '@v1/backend/convex/schema'
 
-const feature = await loadFeature('./features/auth.feature')
+const feature = await loadFeature('./auth.feature')
 
 describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, Then, And }) => {
   let t: ReturnType<typeof convexTest>
@@ -15,6 +15,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, 
     formData?: Record<string, string>
     errorMessage?: string
     validationErrors?: Record<string, string>
+    currentPage?: 'login' | 'signup' | 'dashboard' | 'onboarding' | 'settings' | string
   } = {}
 
   Background(({ Given, And }) => {
@@ -100,11 +101,11 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, 
     })
 
     When('I enter my email {string}', (email) => {
-      testContext.formData = { ...testContext.formData, email }
+      testContext.formData = { ...(testContext.formData ?? {}), email }
     })
 
     And('I enter my password {string}', (password) => {
-      testContext.formData = { ...testContext.formData, password }
+      testContext.formData = { ...(testContext.formData ?? {}), password }
     })
 
     And('I click the login button', async () => {
@@ -141,11 +142,11 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, 
     })
 
     When('I enter email {string}', (email) => {
-      testContext.formData = { ...testContext.formData, email }
+      testContext.formData = { ...(testContext.formData ?? {}), email }
     })
 
     And('I enter password {string}', (password) => {
-      testContext.formData = { ...testContext.formData, password }
+      testContext.formData = { ...(testContext.formData ?? {}), password }
     })
 
     And('I click the login button', async () => {
@@ -182,7 +183,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, 
     })
 
     When('I enter email {string}', (email) => {
-      testContext.formData = { ...testContext.formData, email }
+      testContext.formData = { ...(testContext.formData ?? {}), email }
     })
 
     And('I move focus away from the email field', () => {
@@ -210,7 +211,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, 
     })
 
     When('I enter password {string}', (password) => {
-      testContext.formData = { ...testContext.formData, password }
+      testContext.formData = { ...(testContext.formData ?? {}), password }
     })
 
     And('I move focus away from the password field', () => {
@@ -221,14 +222,14 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, 
         testContext.validationErrors = { password: 'required error' }
       } else if (password.length < 8) {
         testContext.validationErrors = { password: 'too short error' }
-      } else if (!/[a-z]/.test(password)) {
-        testContext.validationErrors = { password: 'no lowercase error' }
-      } else if (!/[0-9]/.test(password)) {
-        testContext.validationErrors = { password: 'no numbers error' }
-      } else if (!/[A-Z]/.test(password)) {
-        testContext.validationErrors = { password: 'no uppercase error' }
       } else if (!/[a-zA-Z]/.test(password)) {
         testContext.validationErrors = { password: 'no letters error' }
+      } else if (!/[0-9]/.test(password)) {
+        testContext.validationErrors = { password: 'no numbers error' }
+      } else if (!/[a-z]/.test(password)) {
+        testContext.validationErrors = { password: 'no lowercase error' }
+      } else if (!/[A-Z]/.test(password)) {
+        testContext.validationErrors = { password: 'no uppercase error' }
       } else {
         testContext.validationErrors = { password: 'no error' }
       }
@@ -260,7 +261,7 @@ describeFeature(feature, ({ Background, Scenario, ScenarioOutline, Given, When, 
     })
 
     When('I change my username to {string}', (newUsername) => {
-      testContext.formData = { ...testContext.formData, username: newUsername }
+      testContext.formData = { ...(testContext.formData ?? {}), username: newUsername }
     })
 
     And('I click {string}', async (buttonText) => {
