@@ -1,5 +1,5 @@
-import { vi } from 'vitest'
 import { createElement } from 'react'
+import { vi } from "vitest";
 
 /**
  * Global test setup utilities
@@ -48,9 +48,21 @@ if (!globalThis.crypto) {
 
   // Mock window.location methods safely
   if (typeof window !== 'undefined' && window.location) {
-    vi.spyOn(window.location, 'assign').mockImplementation(() => {})
-    vi.spyOn(window.location, 'replace').mockImplementation(() => {})
-    vi.spyOn(window.location, 'reload').mockImplementation(() => {})
+    try {
+      vi.spyOn(window.location, "assign").mockImplementation(() => {});
+    } catch (e) {
+      // Property might already be mocked or non-configurable
+    }
+    try {
+      vi.spyOn(window.location, "replace").mockImplementation(() => {});
+    } catch (e) {
+      // Property might already be mocked or non-configurable
+    }
+    try {
+      vi.spyOn(window.location, "reload").mockImplementation(() => {});
+    } catch (e) {
+      // Property might already be mocked or non-configurable
+    }
   }
 
   // Mock localStorage / sessionStorage with independent, stateful instances

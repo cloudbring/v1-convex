@@ -5,16 +5,7 @@ export default defineConfig({
   test: {
     name: 'backend',
     environment: 'jsdom', // needed for browser mocks in vitest.setup.ts
-// packages/backend/vitest.config.ts
-export default {
-  test: {
-    name: 'backend',
-    environment: 'edge-runtime',
-   setupFiles: ['@v1/test-utils/setup.ts'], // or ['../../vitest.setup.ts'] if you prefer explicit root reference
-    globals: true,
-    // …
-  },
-}
+    setupFiles: ['@v1/test-utils/setup.ts'],
     globals: true,
     coverage: {
       provider: 'v8',
