@@ -145,8 +145,8 @@ describe('Input Component', () => {
   })
 
   it('supports file input type', () => {
-    render(<Input type="file" />)
-    const input = screen.getByLabelText('', { selector: 'input[type="file"]' })
+    render(<Input type="file" aria-label="Upload file" />)
+    const input = screen.getByLabelText('Upload file')
     expect(input).toHaveAttribute('type', 'file')
     expect(input).toHaveClass('file:border-0', 'file:bg-transparent')
   })
