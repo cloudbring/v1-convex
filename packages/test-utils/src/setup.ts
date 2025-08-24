@@ -53,19 +53,30 @@ if (!globalThis.crypto) {
     vi.spyOn(window.location, 'reload').mockImplementation(() => {})
   }
 
-  // Mock localStorage
-  const mockStorage = {
-    getItem: vi.fn(),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-    length: 0,
-    key: vi.fn()
+  // Mock localStorage / sessionStorage with independent, stateful instances
+  const createStorageMock = () => {
+    const store = new Map<string, string>()
+    return {
+      getItem: vi.fn((k: string) => (store.has(k) ? store.get(k)! : null)),
+      setItem: vi.fn((k: string, v: string) => { store.set(String(k), String(v)) }),
+      removeItem: vi.fn((k: string) => { store.delete(k) }),
+      clear: vi.fn(() => { store.clear() }),
+      key: vi.fn((i: number) => Array.from(store.keys())[Number(i)] ?? null),
+      get length() { return store.size }
+    }
   }
-  
-  Object.defineProperty(global, 'localStorage', { value: { ...mockStorage } })
-  Object.defineProperty(global, 'sessionStorage', { value: { ...mockStorage } })
-
+  const mockLocalStorage = createStorageMock()
+  const mockSessionStorage = createStorageMock()
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: mockLocalStorage,
+    configurable: true,
+    writable: true
+  })
+  Object.defineProperty(globalThis, 'sessionStorage', {
+    value: mockSessionStorage,
+    configurable: true,
+    writable: true
+  })
   // Mock fetch
   global.fetch = vi.fn()
 
