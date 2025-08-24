@@ -34,8 +34,6 @@ test.describe('Smoke Tests - Critical Paths', () => {
   })
 
   test('should load signup page successfully', async ({ page }) => {
-    await page.goto('/signup')
-    
     // Should not have any major JS errors
     const errors: string[] = []
     page.on('console', (msg) => {
@@ -43,7 +41,8 @@ test.describe('Smoke Tests - Critical Paths', () => {
         errors.push(msg.text())
       }
     })
-    
+
+    await page.goto('/signup')
     await page.waitForLoadState('networkidle')
     
     // Basic form elements should be present
