@@ -18,7 +18,9 @@ export class AuthPage {
     this.emailInput = page.getByRole('textbox', { name: /email/i })
     this.passwordInput = page.getByRole('textbox', { name: /password/i })
     this.nameInput = page.getByRole('textbox', { name: /name/i })
-    this.submitButton = page.getByRole('button', { name: /sign|login|register/i })
+    this.submitButton = page
+      .locator('[data-testid="auth-submit"]')
+      .or(page.getByRole('button', { name: /^(sign in|login|register|sign up)$/i }))
     this.googleSignInButton = page.getByRole('button', { name: /google/i })
     this.errorMessage = page.getByRole('alert').or(page.locator('[data-testid="error-message"]'))
     this.successMessage = page.locator('[data-testid="success-message"]')
