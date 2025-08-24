@@ -56,7 +56,7 @@ export class DashboardPage {
     await this.openUserMenu()
     await this.signOutButton.click()
     // Should redirect to login or home page
-    await expect(this.page).toHaveURL(/.*login.*|^\/$/)
+    await expect(this.page).toHaveURL(/https?:\/\/[^/]+\/(login.*)?$/i)
   }
 
   async expectUserInfo(name: string, email?: string) {
