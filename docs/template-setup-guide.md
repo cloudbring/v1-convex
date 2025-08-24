@@ -298,8 +298,8 @@ bunx convex deploy --prod
 - Check that environment variables are set in Vercel
 - Ensure Convex deployment has auth configuration
 
-### Database Connection Issues  
-- Confirm `CONVEX_URL` matches your deployment
+### Database Connection Issues
+- Confirm `NEXT_PUBLIC_CONVEX_URL` matches your deployment
 - Check that schema is deployed: `bunx convex run init`
 - Verify network access to convex.cloud
 
