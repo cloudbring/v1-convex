@@ -120,17 +120,14 @@ test.describe('Smoke Tests - Critical Paths', () => {
   })
 
   test('should load static assets correctly', async ({ page }) => {
-    await page.goto('/')
-    
     // Check for failed network requests
     const failedRequests: string[] = []
-    
     page.on('response', (response) => {
       if (!response.ok() && response.status() !== 404) {
         failedRequests.push(`${response.status()} - ${response.url()}`)
       }
     })
-    
+    await page.goto('/')
     await page.waitForLoadState('networkidle')
     
     // Allow some tolerance for 404s on favicon, etc.
