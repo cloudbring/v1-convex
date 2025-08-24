@@ -1,6 +1,9 @@
-import React from 'react'
-import { render as rtlRender, RenderOptions } from '@testing-library/react'
+import {
+  type RenderOptions,
+  render as rtlRender,
+} from "@testing-library/react";
 import userEvent from '@testing-library/user-event'
+import type React from "react";
 import { vi } from 'vitest'
 
 // Mock providers that components might need
@@ -17,14 +20,12 @@ const AllTheProviders: React.FC<{ children: React.ReactNode }> = ({ children }) 
  */
 export function render(
   ui: React.ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
+  options?: Omit<RenderOptions, "wrapper">,
 ) {
-  const user = userEvent.setup()
-  
   return {
-    user,
-    ...rtlRender(ui, { wrapper: AllTheProviders, ...options })
-  }
+    user: userEvent,
+    ...rtlRender(ui, { wrapper: AllTheProviders, ...options }),
+  };
 }
 
 /**
@@ -47,12 +48,16 @@ export const testUtils = {
    * Create mock props for components
    */
   createMockProps: <T extends Record<string, any>>(overrides?: Partial<T>): T => {
-    return {
+    const defaultProps = {
       onClick: vi.fn(),
       onChange: vi.fn(),
       onSubmit: vi.fn(),
-      ...overrides
-    } as T
+    };
+
+    return {
+      ...defaultProps,
+      ...overrides,
+    } as unknown as T;
   },
 
   /**
