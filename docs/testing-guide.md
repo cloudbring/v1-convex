@@ -579,12 +579,11 @@ jobs:
       - name: Run E2E tests
         run: bun run test:e2e  # Uses playwright
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
-```
 
 ## Common Issues and Solutions
 
