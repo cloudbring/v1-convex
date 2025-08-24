@@ -35,7 +35,8 @@ export const WithImage: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const avatar = canvas.getByRole('img', { hidden: true }) || canvas.getByText('CN')
+    const image = canvas.queryByRole('img', { hidden: true })
+    const avatar = image ?? canvas.getByText('CN')
     expect(avatar).toBeInTheDocument()
   }
 }
