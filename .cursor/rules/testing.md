@@ -28,16 +28,13 @@ You MUST use these specific testing frameworks:
 
 ## Import Statements
 
-Always use these imports for testing:
-```typescript
 // ✅ CORRECT
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { convexTest } from 'convex-test'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@v1/test-utils/render'
 
 // ❌ WRONG
 import { test } from 'bun:test'  // NEVER use this
-```
 
 ## Test Structure
 
