@@ -76,12 +76,11 @@ describe('Button Component', () => {
   })
 
   it('forwards onClick handler correctly', async () => {
-    const { user } = render(<Button>Clickable</Button>)
+    const onClick = vi.fn()
+    const { user } = render(<Button onClick={onClick}>Clickable</Button>)
     const button = screen.getByRole('button')
-    
     await user.click(button)
-    // If no error is thrown, the click was handled correctly
-    expect(button).toBeInTheDocument()
+    expect(onClick).toHaveBeenCalledTimes(1)
   })
 
   it('is disabled when disabled prop is passed', () => {
