@@ -29,9 +29,6 @@ test.describe('Preview Deployment Tests', () => {
       expect(healthResponse.status()).toBeLessThan(500)
     }
     
-    // Test that the app loads and doesn't crash
-    await page.goto('/')
-    
     // Check for any critical JavaScript errors
     const errors: string[] = []
     page.on('console', (msg) => {
@@ -40,8 +37,13 @@ test.describe('Preview Deployment Tests', () => {
       }
     })
     
+    // Test that the app loads and doesn't crash
+    await page.goto('/')
+    
     await page.waitForLoadState('networkidle')
     
+    // ...rest of test...
+  })
     // Allow some favicon/resource errors but no critical JS errors
     const criticalErrors = errors.filter(error => 
       !error.includes('favicon') && 
