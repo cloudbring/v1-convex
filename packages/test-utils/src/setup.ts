@@ -10,15 +10,41 @@ import { createElement } from 'react'
  */
 export function setupGlobalMocks() {
   // Mock crypto API
-  Object.defineProperty(global, 'crypto', {
-    value: {
-      randomUUID: () => 'mock-uuid',
-      getRandomValues: (arr: Uint8Array) => arr.fill(1),
-      subtle: {
-        digest: vi.fn().mockResolvedValue(new ArrayBuffer(0))
-      }
-    }
+// Safer crypto mocking: polyfill if missing, otherwise spy on existing methods
+const mockCrypto = {
+  randomUUID: () => 'mock-uuid',
+  getRandomValues: (arr: Uint8Array) => arr.fill(1),
+  subtle: { digest: vi.fn().mockResolvedValue(new ArrayBuffer(0)) }
+} as any
+
+if (!globalThis.crypto) {
+  // Define a configurable crypto when it's completely missing
+  Object.defineProperty(globalThis, 'crypto', {
+    value: mockCrypto,
+    configurable: true
   })
+} else {
+  // Spy or override individual methods
+  if (typeof globalThis.crypto.randomUUID === 'function') {
+    vi.spyOn(globalThis.crypto, 'randomUUID').mockImplementation(mockCrypto.randomUUID)
+  } else {
+    ;(globalThis.crypto as any).randomUUID = mockCrypto.randomUUID
+  }
+
+  if (typeof globalThis.crypto.getRandomValues === 'function') {
+    vi.spyOn(globalThis.crypto, 'getRandomValues').mockImplementation(mockCrypto.getRandomValues)
+  } else {
+    ;(globalThis.crypto as any).getRandomValues = mockCrypto.getRandomValues
+  }
+
+  // Ensure subtle exists, then spy or override its digest
+  ;(globalThis.crypto as any).subtle ??= {}
+  if (typeof (globalThis.crypto as any).subtle.digest === 'function') {
+    vi.spyOn((globalThis.crypto as any).subtle, 'digest').mockImplementation(mockCrypto.subtle.digest)
+  } else {
+    ;(globalThis.crypto as any).subtle.digest = mockCrypto.subtle.digest
+  }
+}
 
   // Mock window.location methods safely
   if (typeof window !== 'undefined' && window.location) {
