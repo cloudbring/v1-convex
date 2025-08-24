@@ -33,6 +33,7 @@
         "**/*.{test,spec}.{ts,tsx}",
         "**/*.feature",
         "**/*.steps.ts",
+        "**/*.step.ts",
         "**/vitest*.config.{ts,js}",
         "**/.storybook/**"
       ]
