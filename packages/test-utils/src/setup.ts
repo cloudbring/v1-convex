@@ -121,9 +121,12 @@ export function setupNextJsMocks() {
     }),
     usePathname: () => '/',
     useSearchParams: () => new URLSearchParams(),
-    notFound: vi.fn()
+    notFound: () => {
+      const err: any = new Error('NEXT_NOT_FOUND')
+      err.digest = 'NEXT_NOT_FOUND'
+      throw err
+    }
   }))
-
   vi.mock('next/image', () => ({
     default: ({ src, alt, ...props }: any) =>
       createElement('img', { src, alt, ...props })
