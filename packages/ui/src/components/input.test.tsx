@@ -52,6 +52,7 @@ describe('Input Component', () => {
       <Input
         placeholder="Enter text"
         value="test value"
+        readOnly
         disabled
         required
         aria-label="Test input"
