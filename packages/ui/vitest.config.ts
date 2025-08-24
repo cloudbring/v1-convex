@@ -29,10 +29,13 @@ export default defineConfig({
     },
     include: ['src/**/*.test.{ts,tsx}']
   },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@v1/test-utils': path.resolve(__dirname, '../test-utils/src')
-    }
-  }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@v1/test-utils/*": ["../test-utils/src/*"]
+    },
+    "module": "ESNext",
+    "moduleResolution": "Bundler"
+  },
 })
