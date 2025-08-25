@@ -67,33 +67,6 @@ export default defineConfig({
           testTimeout: 30000,
           hookTimeout: 10000
         }
-      },
-      // Integration tests project (currently using same files as unit but can be filtered by mode)
-      {
-        test: {
-          name: 'integration',
-          globals: true,
-          environment: 'jsdom',
-          setupFiles: ['./vitest.setup.ts'],
-          include: [
-            'packages/**/*.integration.{ts,tsx}',
-            'apps/**/*.integration.{ts,tsx}',
-            // Also include regular test files that can be run in integration mode
-            'packages/**/*.test.{ts,tsx}',
-            'apps/**/*.test.{ts,tsx}'
-          ],
-          exclude: [
-            '**/node_modules/**',
-            '**/dist/**',
-            '**/.next/**',
-            '**/cypress/**',
-            '**/tests/e2e/**',
-            '**/*.stories.tsx',
-            '**/convex/_generated/**'
-          ],
-          // Use integration mode to differentiate from unit tests
-          mode: 'integration'
-        }
       }
     ],
     // Unified coverage configuration
