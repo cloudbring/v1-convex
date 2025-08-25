@@ -50,8 +50,7 @@ describe('Logo Component', () => {
     render(<Logo className="custom-logo-class" data-testid="logo" />)
     
     const logo = screen.getByTestId('logo')
-    expect(logo).toHaveClass('text-primary')
-    expect(logo.className).toContain('custom-logo-class')
+    expect(logo).toHaveClass('text-primary', 'custom-logo-class')
   })
 
   /**
@@ -86,8 +85,8 @@ describe('Logo Component', () => {
     
     expect(path).toBeInTheDocument()
     expect(path).toHaveAttribute('fill', 'currentColor')
-    expect(path).toHaveAttribute('fillRule', 'evenodd')
-    expect(path).toHaveAttribute('clipRule', 'evenodd')
+    expect(path).toHaveAttribute('fill-rule', 'evenodd')
+    expect(path).toHaveAttribute('clip-rule', 'evenodd')
   })
 
   /**

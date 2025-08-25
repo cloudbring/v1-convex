@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    ".": "./src/render.tsx",
     "./convex": "./src/convex-helpers.ts",
     "./convex-helpers": "./src/convex-helpers.ts",
     "./render": "./src/render.tsx",

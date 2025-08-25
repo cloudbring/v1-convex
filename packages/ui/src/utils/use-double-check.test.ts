@@ -60,9 +60,16 @@ describe('useDoubleCheck Hook', () => {
     
     expect(result.current.doubleCheck).toBe(true)
     
-    // When doubleCheck is true, onClick should be undefined to allow normal action
+    // When doubleCheck is true, onClick should not preventDefault
     const buttonProps = result.current.getButtonProps()
-    expect(buttonProps.onClick).toBeUndefined()
+    const secondMockEvent = { preventDefault: vi.fn() }
+    
+    act(() => {
+      buttonProps.onClick?.(secondMockEvent as any)
+    })
+    
+    // Should not call preventDefault on second click
+    expect(secondMockEvent.preventDefault).not.toHaveBeenCalled()
   })
 
   /**
