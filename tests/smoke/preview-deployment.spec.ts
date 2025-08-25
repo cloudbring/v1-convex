@@ -39,11 +39,8 @@ test.describe('Preview Deployment Tests', () => {
     
     // Test that the app loads and doesn't crash
     await page.goto('/')
-    
     await page.waitForLoadState('networkidle')
     
-    // ...rest of test...
-  })
     // Allow some favicon/resource errors but no critical JS errors
     const criticalErrors = errors.filter(error => 
       !error.includes('favicon') && 

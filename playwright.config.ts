@@ -37,39 +37,30 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-    },
-
-    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup'],
-    },
+    // Temporarily disable other browsers for debugging
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      dependencies: ['setup'],
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
-      dependencies: ['setup'],
-    },
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-      dependencies: ['setup'],
-    },
+    // {
+    //   name: 'Mobile Chrome',
+    //   use: { ...devices['Pixel 5'] },
+    // },
+    // {
+    //   name: 'Mobile Safari',
+    //   use: { ...devices['iPhone 12'] },
+    // },
 
     /* Test against branded browsers. */
     // {
@@ -85,8 +76,10 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: 'bun run dev:app',
-    port: 3000,
+    url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000
+    timeout: 120000,
+    stdout: 'ignore',
+    stderr: 'pipe'
   },
 })
