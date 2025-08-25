@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { within, userEvent, expect, fn } from 'storybook/internal/test'
+import { within, userEvent, expect, fn } from '@storybook/test'
 import { UploadInput } from './upload-input'
 import { Button } from './button'
 import { useState } from 'react'
@@ -46,8 +46,7 @@ export const Default: Story = {
     onUploadComplete: mockOnUploadComplete
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const input = canvas.getByRole('button') // File inputs are treated as buttons
+    const input = canvasElement.querySelector('input[type="file"]')
     
     expect(input).toBeInTheDocument()
     expect(input).toHaveAttribute('type', 'file')

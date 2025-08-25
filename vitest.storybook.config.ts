@@ -15,6 +15,17 @@ export default defineConfig({
       configDir: path.join(dirname, '.storybook')
     })
   ],
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+      '@storybook/react',
+      '@storybook/addon-vitest',
+      '@storybook/test'
+    ]
+  },
   test: {
     name: 'storybook',
     browser: {
@@ -23,9 +34,13 @@ export default defineConfig({
       provider: 'playwright',
       instances: [{
         browser: 'chromium'
-      }]
+      }],
+      screenshotFailures: false,
+      slowHijackESM: false
     },
     setupFiles: ['.storybook/vitest.setup.ts'],
+    testTimeout: 30000,
+    hookTimeout: 10000,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],

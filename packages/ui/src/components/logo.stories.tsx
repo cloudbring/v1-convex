@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { within, expect } from 'storybook/internal/test'
+import { within, expect } from '@storybook/test'
 import { Logo } from './logo'
 
 const meta: Meta<typeof Logo> = {
@@ -36,8 +36,7 @@ type Story = StoryObj<typeof meta>
 // Default logo
 export const Default: Story = {
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const logo = canvas.getByRole('img')
+    const logo = canvasElement.querySelector('svg')
     
     expect(logo).toBeInTheDocument()
     expect(logo).toHaveAttribute('width', '40')
@@ -71,8 +70,7 @@ export const Sizes: Story = {
     </div>
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const logos = canvas.getAllByRole('img')
+    const logos = canvasElement.querySelectorAll('svg')
     
     expect(logos).toHaveLength(4)
     expect(logos[0]).toHaveAttribute('width', '24')

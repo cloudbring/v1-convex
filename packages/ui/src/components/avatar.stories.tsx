@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { within, expect } from 'storybook/internal/test'
+import { within, expect } from '@storybook/test'
 import { Avatar, AvatarFallback, AvatarImage } from './avatar'
 
 const meta: Meta<typeof Avatar> = {
@@ -95,11 +95,10 @@ export const AvatarGroup: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const avatars = canvas.getAllByRole('img', { hidden: true })
     const fallbacks = canvas.getAllByText(/CN|V|\+2/)
     
-    // Should have multiple avatar elements
-    expect(avatars.length + fallbacks.length).toBeGreaterThanOrEqual(3)
+    // Should have 3 avatar fallbacks
+    expect(fallbacks.length).toBe(3)
   }
 }
 

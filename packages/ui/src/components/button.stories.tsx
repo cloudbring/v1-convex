@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { within, userEvent, expect, fn } from 'storybook/internal/test'
+import { within, userEvent, expect, fn } from '@storybook/test'
 import { Button } from './button'
 
 // Mock function for click events

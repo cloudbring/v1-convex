@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { within, userEvent, expect, fn } from 'storybook/internal/test'
+import { within, userEvent, expect, fn } from '@storybook/test'
 import { Input } from './input'
 import { useState } from 'react'
 
@@ -194,11 +194,10 @@ export const File: Story = {
     accept: '.txt,.pdf,.doc,.docx'
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
-    const input = canvas.getByRole('button', { name: /choose file|browse/i }) || 
-                  canvas.getByDisplayValue('') // File inputs can be tricky to query
+    const input = canvasElement.querySelector('input[type="file"]')
     
     expect(input).toBeInTheDocument()
+    expect(input).toHaveAttribute('accept', '.txt,.pdf,.doc,.docx')
   }
 }
 
