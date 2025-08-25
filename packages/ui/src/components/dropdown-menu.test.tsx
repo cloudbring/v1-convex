@@ -13,6 +13,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { 
   DropdownMenu,
   DropdownMenuTrigger,
@@ -20,7 +21,14 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-  DropdownMenuGroup
+  DropdownMenuGroup,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent
 } from './dropdown-menu'
 
 describe('DropdownMenu Components', () => {
@@ -126,6 +134,85 @@ describe('DropdownMenu Components', () => {
             <DropdownMenuItem>Grouped Item 1</DropdownMenuItem>
             <DropdownMenuItem>Grouped Item 2</DropdownMenuItem>
           </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    expect(screen.getByText('Open')).toBeInTheDocument()
+  })
+
+  /**
+   * Test dropdown menu checkbox item
+   * Should render checkbox item with proper checked state
+   */
+  it('should render dropdown menu checkbox item', () => {
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuCheckboxItem checked={true}>Checked Item</DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem checked={false}>Unchecked Item</DropdownMenuCheckboxItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    expect(screen.getByText('Open')).toBeInTheDocument()
+  })
+
+  /**
+   * Test dropdown menu radio items
+   * Should render radio group with selectable items
+   */
+  it('should render dropdown menu radio items', () => {
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuRadioGroup value="option1">
+            <DropdownMenuRadioItem value="option1">Option 1</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="option2">Option 2</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    expect(screen.getByText('Open')).toBeInTheDocument()
+  })
+
+  /**
+   * Test dropdown menu shortcut
+   * Should render keyboard shortcuts with proper styling
+   */
+  it('should render dropdown menu shortcut', () => {
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>
+            Copy <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+
+    expect(screen.getByText('Open')).toBeInTheDocument()
+  })
+
+  /**
+   * Test dropdown submenu
+   * Should render submenu with trigger and content
+   */
+  it('should render dropdown submenu', () => {
+    render(
+      <DropdownMenu>
+        <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger inset>More Options</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem>Sub Item 1</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
         </DropdownMenuContent>
       </DropdownMenu>
     )

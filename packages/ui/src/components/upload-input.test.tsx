@@ -10,20 +10,25 @@
  * UploadInput provides file upload functionality with custom upload handlers.
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { UploadInput } from './upload-input'
 
 // Mock the uploadstuff/react module
+const mockStartUpload = vi.fn()
 vi.mock('@xixixao/uploadstuff/react', () => ({
   useUploadFiles: vi.fn(() => ({
-    startUpload: vi.fn()
+    startUpload: mockStartUpload
   }))
 }))
 
 describe('UploadInput Component', () => {
   const mockGenerateUploadUrl = vi.fn(() => Promise.resolve('https://mock-url.com'))
   const mockOnUploadComplete = vi.fn()
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
   /**
    * Test upload input component export
@@ -141,5 +146,90 @@ describe('UploadInput Component', () => {
     const input = screen.getByTestId('upload-input')
     expect(input).toBeInstanceOf(HTMLInputElement)
     expect(input.tagName).toBe('INPUT')
+  })
+
+  /**
+   * Test file selection and upload workflow
+   * Should handle file selection and trigger upload process
+   */
+  it('should handle file selection and upload', async () => {
+    render(
+      <UploadInput
+        generateUploadUrl={mockGenerateUploadUrl}
+        onUploadComplete={mockOnUploadComplete}
+        data-testid="upload-input"
+      />
+    )
+
+    const input = screen.getByTestId('upload-input') as HTMLInputElement
+    const file = new File(['test content'], 'test.txt', { type: 'text/plain' })
+
+    fireEvent.change(input, { target: { files: [file] } })
+    
+    expect(mockStartUpload).toHaveBeenCalledWith([file])
+  })
+
+  /**
+   * Test empty file selection
+   * Should not trigger upload when no files selected
+   */
+  it('should handle empty file selection', () => {
+    render(
+      <UploadInput
+        generateUploadUrl={mockGenerateUploadUrl}
+        onUploadComplete={mockOnUploadComplete}
+        data-testid="upload-input"
+      />
+    )
+
+    const input = screen.getByTestId('upload-input')
+    
+    // Simulate empty file selection
+    fireEvent.change(input, { target: { files: [] } })
+    
+    expect(mockStartUpload).not.toHaveBeenCalled()
+  })
+
+  /**
+   * Test no files target
+   * Should not trigger upload when files is null
+   */
+  it('should handle null files target', () => {
+    render(
+      <UploadInput
+        generateUploadUrl={mockGenerateUploadUrl}
+        onUploadComplete={mockOnUploadComplete}
+        data-testid="upload-input"
+      />
+    )
+
+    const input = screen.getByTestId('upload-input')
+    
+    // Simulate no files in target
+    fireEvent.change(input, { target: { files: null } })
+    
+    expect(mockStartUpload).not.toHaveBeenCalled()
+  })
+
+  /**
+   * Test multiple file selection
+   * Should handle multiple files properly
+   */
+  it('should handle multiple file selection', () => {
+    render(
+      <UploadInput
+        generateUploadUrl={mockGenerateUploadUrl}
+        onUploadComplete={mockOnUploadComplete}
+        data-testid="upload-input"
+      />
+    )
+
+    const input = screen.getByTestId('upload-input')
+    const file1 = new File(['content1'], 'test1.txt', { type: 'text/plain' })
+    const file2 = new File(['content2'], 'test2.txt', { type: 'text/plain' })
+    
+    fireEvent.change(input, { target: { files: [file1, file2] } })
+    
+    expect(mockStartUpload).toHaveBeenCalledWith([file1, file2])
   })
 })

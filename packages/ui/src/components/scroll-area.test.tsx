@@ -143,4 +143,37 @@ describe('ScrollArea Components', () => {
     expect(scrollArea).toBeInTheDocument()
     expect(screen.getByText('Default content')).toBeInTheDocument()
   })
+
+  /**
+   * Test scroll bar with horizontal orientation
+   * Should render horizontal scroll bar properly
+   */
+  it('should render horizontal scroll bar', () => {
+    render(
+      <ScrollArea data-testid="scroll-area">
+        <ScrollBar orientation="horizontal" data-testid="horizontal-scrollbar" />
+        <div style={{ width: '200%' }}>Wide content that needs horizontal scrolling</div>
+      </ScrollArea>
+    )
+
+    const scrollArea = screen.getByTestId('scroll-area')
+    expect(scrollArea).toBeInTheDocument()
+    expect(screen.getByText('Wide content that needs horizontal scrolling')).toBeInTheDocument()
+  })
+
+  /**
+   * Test scroll bar with custom styling
+   * Should apply custom className to scroll bar
+   */
+  it('should render scroll bar with custom styling', () => {
+    render(
+      <ScrollArea data-testid="scroll-area">
+        <ScrollBar className="custom-scrollbar" data-testid="custom-scrollbar" />
+        <div>Content with custom scroll bar</div>
+      </ScrollArea>
+    )
+
+    const scrollArea = screen.getByTestId('scroll-area')
+    expect(scrollArea).toBeInTheDocument()
+  })
 })

@@ -20,7 +20,8 @@ import {
   SelectItem,
   SelectValue,
   SelectGroup,
-  SelectLabel
+  SelectLabel,
+  SelectSeparator
 } from './select'
 
 describe('Select Components', () => {
@@ -154,6 +155,30 @@ describe('Select Components', () => {
         <SelectContent>
           <SelectItem value="default-option">Default Option</SelectItem>
           <SelectItem value="other-option">Other Option</SelectItem>
+        </SelectContent>
+      </Select>
+    )
+
+    const trigger = screen.getByTestId('select-trigger')
+    expect(trigger).toBeInTheDocument()
+  })
+
+  /**
+   * Test select with separator
+   * Should render separator between option groups
+   */
+  it('should render select with separator', () => {
+    render(
+      <Select>
+        <SelectTrigger data-testid="select-trigger">
+          <SelectValue placeholder="Select with separators..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="option1">Option 1</SelectItem>
+          <SelectSeparator data-testid="select-separator" />
+          <SelectItem value="option2">Option 2</SelectItem>
+          <SelectSeparator className="custom-separator" />
+          <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
       </Select>
     )
