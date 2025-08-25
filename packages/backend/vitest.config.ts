@@ -2,10 +2,14 @@ import { defineConfig } from 'vitest/config'
 import path from 'path'
 
 export default defineConfig({
+  esbuild: {
+    target: 'node18'
+  },
   test: {
     name: 'backend',
-    environment: 'jsdom', // needed for browser mocks in vitest.setup.ts
-    setupFiles: ['@v1/test-utils/setup.ts'],
+    environment: 'node', // Change to node for convex-test compatibility
+    setupFiles: ['../test-utils/src/setup.ts'],
+    pool: 'forks', // Ensure better isolation for mocks
     globals: true,
     coverage: {
       provider: 'v8',

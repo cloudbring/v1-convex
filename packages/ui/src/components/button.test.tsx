@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@v1/test-utils/render'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '../../../test-utils/src/render'
 import { Button, buttonVariants } from './button'
 
 describe('Button Component', () => {
@@ -79,6 +79,7 @@ describe('Button Component', () => {
     const onClick = vi.fn()
     const { user } = render(<Button onClick={onClick}>Clickable</Button>)
     const button = screen.getByRole('button')
+    
     await user.click(button)
     expect(onClick).toHaveBeenCalledTimes(1)
   })

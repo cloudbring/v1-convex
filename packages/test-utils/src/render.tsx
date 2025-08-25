@@ -22,9 +22,14 @@ export function render(
   ui: React.ReactElement,
   options?: Omit<RenderOptions, "wrapper">,
 ) {
+  const result = rtlRender(ui, { wrapper: AllTheProviders, ...options });
+  
+  // Create userEvent instance after render
+  const user = userEvent.setup();
+  
   return {
-    user: userEvent,
-    ...rtlRender(ui, { wrapper: AllTheProviders, ...options }),
+    ...result,
+    user,
   };
 }
 
@@ -34,9 +39,91 @@ export function render(
 export { renderHook } from '@testing-library/react'
 
 /**
- * Re-export everything from React Testing Library
+ * Re-export everything EXCEPT render from React Testing Library
  */
-export * from '@testing-library/react'
+export {
+  act,
+  cleanup,
+  configure,
+  fireEvent,
+  getConfig,
+  getDefaultNormalizer,
+  getRoles,
+  isInaccessible,
+  logRoles,
+  queries,
+  queryHelpers,
+  within,
+  getQueriesForElement,
+  buildQueries,
+  getElementError,
+  getMultipleElementsFoundError,
+  makeFindQuery,
+  makeGetAllQuery,
+  makeSingleQuery,
+  queryAllByAttribute,
+  queryByAttribute,
+  wrapAllByQueryWithSuggestion,
+  wrapSingleQueryWithSuggestion,
+  waitFor,
+  waitForElementToBeRemoved,
+  getNodeText,
+  createEvent,
+  screen,
+  logDOM,
+  prettyDOM,
+  prettyFormat,
+  getSuggestedQuery,
+  // Query exports
+  findAllByLabelText,
+  findByLabelText,
+  getAllByLabelText,
+  getByLabelText,
+  queryAllByLabelText,
+  queryByLabelText,
+  findAllByPlaceholderText,
+  findByPlaceholderText,
+  getAllByPlaceholderText,
+  getByPlaceholderText,
+  queryAllByPlaceholderText,
+  queryByPlaceholderText,
+  findAllByText,
+  findByText,
+  getAllByText,
+  getByText,
+  queryAllByText,
+  queryByText,
+  findAllByDisplayValue,
+  findByDisplayValue,
+  getAllByDisplayValue,
+  getByDisplayValue,
+  queryAllByDisplayValue,
+  queryByDisplayValue,
+  findAllByAltText,
+  findByAltText,
+  getAllByAltText,
+  getByAltText,
+  queryAllByAltText,
+  queryByAltText,
+  findAllByTitle,
+  findByTitle,
+  getAllByTitle,
+  getByTitle,
+  queryAllByTitle,
+  queryByTitle,
+  findAllByRole,
+  findByRole,
+  getAllByRole,
+  getByRole,
+  queryAllByRole,
+  queryByRole,
+  findAllByTestId,
+  findByTestId,
+  getAllByTestId,
+  getByTestId,
+  queryAllByTestId,
+  queryByTestId,
+} from '@testing-library/react'
 export { userEvent }
 
 /**

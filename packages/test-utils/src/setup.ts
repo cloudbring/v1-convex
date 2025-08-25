@@ -9,6 +9,88 @@ import { vi } from "vitest";
  * Mock window APIs commonly needed in tests
  */
 export function setupGlobalMocks() {
+  // Mock import.meta.glob for convex-test compatibility
+  if (!globalThis.importMeta) {
+    globalThis.importMeta = {};
+  }
+  if (!globalThis.importMeta.glob) {
+    globalThis.importMeta.glob = () => ({});
+  }
+  
+  // Also set on import.meta if it exists
+  if (typeof import.meta !== 'undefined') {
+    (import.meta as any).glob = () => ({});
+  }
+
+  // Create a comprehensive Blob mock for convex-test compatibility
+  const originalBlob = globalThis.Blob;
+  
+  globalThis.Blob = class MockBlob {
+    size: number = 0;
+    type: string = '';
+    
+    constructor(parts: BlobPart[] = [], options: BlobPropertyBag = {}) {
+      this.type = options.type || '';
+      // Calculate approximate size
+      if (parts) {
+        this.size = parts.reduce((total, part) => {
+          if (typeof part === 'string') return total + part.length;
+          if (part instanceof ArrayBuffer) return total + part.byteLength;
+          if (ArrayBuffer.isView(part)) return total + part.byteLength;
+          return total;
+        }, 0);
+      }
+    }
+    
+    async arrayBuffer(): Promise<ArrayBuffer> {
+      // Return a mock ArrayBuffer with some content for testing
+      const buffer = new ArrayBuffer(this.size || 8);
+      const view = new Uint8Array(buffer);
+      // Fill with some dummy data
+      for (let i = 0; i < view.length; i++) {
+        view[i] = i % 256;
+      }
+      return buffer;
+    }
+    
+    stream(): ReadableStream<Uint8Array> {
+      const data = new Uint8Array(this.size || 8);
+      let index = 0;
+      
+      return new ReadableStream({
+        start(controller) {
+          controller.enqueue(data);
+          controller.close();
+        }
+      });
+    }
+    
+    slice(start?: number, end?: number, contentType?: string): Blob {
+      return new MockBlob([], { type: contentType || this.type });
+    }
+    
+    async text(): Promise<string> {
+      return 'mock-text-content';
+    }
+    
+    async bytes(): Promise<Uint8Array> {
+      const buffer = await this.arrayBuffer();
+      return new Uint8Array(buffer);
+    }
+  } as any;
+  
+  // Preserve any existing static methods
+  if (originalBlob) {
+    Object.getOwnPropertyNames(originalBlob).forEach(name => {
+      if (name !== 'prototype' && name !== 'length' && name !== 'name') {
+        try {
+          (globalThis.Blob as any)[name] = (originalBlob as any)[name];
+        } catch (e) {
+          // Ignore failures to copy non-configurable properties
+        }
+      }
+    });
+  }
   // Mock crypto API
 // Safer crypto mocking: polyfill if missing, otherwise spy on existing methods
 const mockCrypto = {
