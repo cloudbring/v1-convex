@@ -95,10 +95,14 @@ export const AvatarGroup: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const fallbacks = canvas.getAllByText(/CN|V|\+2/)
+    const cnFallback = canvas.getByText('CN')
+    const vFallback = canvas.getByText('V')
+    const plusFallback = canvas.getByText('+2')
     
-    // Should have 3 avatar fallbacks
-    expect(fallbacks.length).toBe(3)
+    // Should have all 3 avatar fallbacks
+    expect(cnFallback).toBeInTheDocument()
+    expect(vFallback).toBeInTheDocument()
+    expect(plusFallback).toBeInTheDocument()
   }
 }
 
