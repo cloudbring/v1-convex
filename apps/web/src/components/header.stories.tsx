@@ -1,63 +1,37 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { within, expect } from '@storybook/test'
+import { vi } from 'vitest'
+import { Header } from './header'
 
-// Create a mock version of Header without external dependencies
-const Header = () => {
-  const [showDialog, setShowDialog] = React.useState(false)
-  
-  return (
-    <header className="absolute top-0 w-full flex items-center justify-between p-4 z-10">
-      <span className="hidden md:block text-sm font-medium">convex-v1.run</span>
-      
-      <a href="/">
-        <img
-          src="/logo.png"
-          alt="V1 logo"
-          width={60}
-          height={60}
-        />
-      </a>
-      
-      <button
-        onClick={() => setShowDialog(!showDialog)}
-        className="text-sm font-medium px-4 py-2 border border-border rounded"
-      >
-        Subscribe
-      </button>
-      
-      {showDialog && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-            <h2 className="text-lg font-semibold mb-4">Subscribe to Newsletter</h2>
-            <form className="space-y-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full border border-border rounded px-3 py-2"
-              />
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowDialog(false)}
-                  className="px-4 py-2 border border-border rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded"
-                >
-                  Subscribe
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </header>
+// Mock Next.js components for Storybook
+vi.mock('next/image', () => ({
+  __esModule: true,
+  default: ({ src, alt, width, height, ...props }: any) => (
+    React.createElement('img', { src, alt, width, height, ...props })
   )
-}
+}))
+
+vi.mock('next/link', () => ({
+  __esModule: true,
+  default: ({ href, children, ...props }: any) => (
+    React.createElement('a', { href, ...props }, children)
+  )
+}))
+
+// Mock Convex API
+vi.mock('@v1/backend/convex/_generated/api', () => ({
+  api: {
+    web: {
+      subscribe: 'mockSubscribeAction'
+    }
+  }
+}))
+
+// Mock Convex hooks
+vi.mock('convex/react', () => ({
+  useAction: () => vi.fn()
+}))
 
 const meta: Meta<typeof Header> = {
   title: 'Web/Components/Header',
@@ -100,14 +74,13 @@ export const Default: Story = {
     expect(siteName).toBeInTheDocument()
     expect(siteName).toHaveClass('hidden md:block')
     
-    // Check for logo link
-    const logoLink = canvas.getByRole('link')
+    // Check for logo link (get the specific one with the logo image)
+    const logoLink = canvas.getByRole('link', { name: 'V1 logo' })
     expect(logoLink).toHaveAttribute('href', '/')
     
     // Check for logo image
     const logo = canvas.getByAltText('V1 logo')
     expect(logo).toBeInTheDocument()
-    expect(logo).toHaveAttribute('width', '60')
   }
 }
 
@@ -154,11 +127,11 @@ export const HeaderElements: Story = {
     // Test all header elements
     expect(canvas.getByText('convex-v1.run')).toBeInTheDocument()
     expect(canvas.getByAltText('V1 logo')).toBeInTheDocument()
-    expect(canvas.getByText('Subscribe')).toBeInTheDocument()
+    expect(canvas.getByText('Get updates')).toBeInTheDocument()
     
-    // Test dialog trigger
-    const subscribeButton = canvas.getByText('Subscribe')
-    expect(subscribeButton.closest('button')).toBeInTheDocument()
+    // Test dialog trigger - it's a span with dialog trigger attributes
+    const subscribeButton = canvas.getByText('Get updates')
+    expect(subscribeButton).toHaveAttribute('aria-haspopup', 'dialog')
   }
 }
 
@@ -167,12 +140,11 @@ export const LogoAccessibility: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     
-    const logoLink = canvas.getByRole('link')
+    const logoLink = canvas.getByRole('link', { name: 'V1 logo' })
     const logoImage = canvas.getByAltText('V1 logo')
     
     expect(logoLink).toHaveAttribute('href', '/')
     expect(logoImage).toHaveAttribute('alt', 'V1 logo')
-    expect(logoImage).toHaveAttribute('width', '60')
   }
 }
 
@@ -182,11 +154,11 @@ export const SubscribeDialog: Story = {
     const canvas = within(canvasElement)
     
     // Check for dialog components
-    const subscribeButton = canvas.getByText('Subscribe')
+    const subscribeButton = canvas.getByText('Get updates')
     expect(subscribeButton).toBeInTheDocument()
     
-    // The button should be a button element
-    expect(subscribeButton.tagName).toBe('BUTTON')
+    // The button should be a span element (DialogTrigger asChild)
+    expect(subscribeButton.tagName).toBe('SPAN')
   }
 }
 

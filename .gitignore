@@ -52,3 +52,6 @@ packages/email/public
 # Storybook
 storybook-static
 tailwind.css
+
+# MCP local configuration with secrets
+.mcp.local.json

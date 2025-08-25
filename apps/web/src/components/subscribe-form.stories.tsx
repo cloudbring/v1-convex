@@ -1,64 +1,18 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { within, userEvent, expect, fn } from '@storybook/test'
+import { vi } from 'vitest'
+import { SubscribeForm } from './subscribe-form'
 
-// Create a mock version of SubscribeForm without external dependencies
-const SubscribeForm = ({ group, placeholder, className }: { group: string; placeholder: string; className?: string }) => {
-  const [isSubmitted, setSubmitted] = React.useState(false)
-  const [pending, setPending] = React.useState(false)
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setPending(true)
-    setTimeout(() => {
-      setSubmitted(true)
-      setPending(false)
-      setTimeout(() => setSubmitted(false), 5000)
-    }, 1000)
-  }
-  
-  return (
-    <div>
-      <div>
-        {isSubmitted ? (
-          <div className="border border-[#2C2C2C] text-sm text-primary h-9 w-[290px] flex items-center py-0.5 px-2 justify-between">
-            <p>Subscribed</p>
-            <svg width="17" height="17" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <title>Check</title>
-              <path
-                d="m14.546 4.724-8 8-3.667-3.667.94-.94 2.727 2.72 7.06-7.053.94.94Z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-        ) : (
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <input
-              placeholder={placeholder}
-              type="email"
-              name="email"
-              id="email"
-              autoComplete="email"
-              aria-label="Email address"
-              required
-              className={className || "border border-border rounded px-3 py-2"}
-            />
-            <button type="submit" className="ml-auto rounded-full bg-primary text-primary-foreground px-4 py-2" disabled={pending}>
-              {pending ? (
-                <svg className="size-4 animate-spin" fill="currentColor" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" opacity="0.25"/>
-                  <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" opacity="0.75"/>
-                </svg>
-              ) : (
-                "Subscribe"
-              )}
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
-  )
-}
+// Mock Convex hooks for Storybook
+vi.mock('convex/react', () => ({
+  useAction: () => fn()
+}))
+
+// Mock useFormStatus from react-dom for Storybook  
+vi.mock('react-dom', () => ({
+  useFormStatus: () => ({ pending: false })
+}))
 
 const meta: Meta<typeof SubscribeForm> = {
   title: 'Web/Components/SubscribeForm',

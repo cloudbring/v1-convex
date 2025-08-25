@@ -1,36 +1,13 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { within, userEvent, expect, fn } from '@storybook/test'
+import { vi } from 'vitest'
+import { CopyText } from './copy-text'
 
-// Create a mock version of CopyText that doesn't use external hooks
-const CopyText = ({ value }: { value: string }) => {
-  const [copied, setCopied] = React.useState(false)
-  
-  const handleCopy = () => {
-    // Mock copy behavior
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-  
-  return (
-    <button
-      onClick={handleCopy}
-      type="button"
-      className="font-mono text-[#878787] text-xs md:text-sm p-4 rounded-full border border-border transition-colors flex items-center gap-2 bg-background"
-    >
-      <span>{value}</span>
-      {copied ? (
-        <svg className="size-3.5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-        </svg>
-      ) : (
-        <svg className="size-3.5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-        </svg>
-      )}
-    </button>
-  )
-}
+// Mock usehooks-ts for Storybook
+vi.mock('usehooks-ts', () => ({
+  useCopyToClipboard: () => [null, fn()]
+}))
 
 const meta: Meta<typeof CopyText> = {
   title: 'Web/Components/CopyText',
@@ -58,15 +35,15 @@ type Story = StoryObj<typeof meta>
 // Default copy text
 export const Default: Story = {
   args: {
-    value: 'npm install @v1/ui'
+    value: 'hello@convex-v1.run'
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const button = canvas.getByRole('button')
-    const copyIcon = canvas.getByText('npm install @v1/ui')
+    const copyText = canvas.getByText('hello@convex-v1.run')
     
     expect(button).toBeInTheDocument()
-    expect(copyIcon).toBeInTheDocument()
+    expect(copyText).toBeInTheDocument()
   }
 }
 
@@ -77,13 +54,6 @@ export const ShortValue: Story = {
   }
 }
 
-// Long command
-export const LongCommand: Story = {
-  args: {
-    value: 'bunx create-convex-app@latest my-convex-app --template=next-js-shadcn'
-  }
-}
-
 // URL example
 export const URL: Story = {
   args: {
@@ -91,17 +61,17 @@ export const URL: Story = {
   }
 }
 
-// API key example
-export const APIKey: Story = {
+// Email address
+export const EmailAddress: Story = {
   args: {
-    value: 'cvx_1a2b3c4d5e6f7g8h9i0j'
+    value: 'support@convex-v1.run'
   }
 }
 
-// Docker command
-export const DockerCommand: Story = {
+// Reference ID
+export const ReferenceID: Story = {
   args: {
-    value: 'docker run -p 3000:3000 convex/v1:latest'
+    value: 'REF-12345-ABCD'
   }
 }
 
@@ -117,21 +87,28 @@ export const InteractiveCopy: Story = {
     // Click to copy
     await userEvent.click(button)
     
-    // Should show check icon briefly (this is visual feedback, hard to test the actual icon swap)
+    // Button should still be there after click
     expect(button).toBeInTheDocument()
   }
 }
 
-// Environment variable
-export const EnvironmentVariable: Story = {
+// Long URL
+export const LongURL: Story = {
   args: {
-    value: 'CONVEX_DEPLOYMENT_URL=https://your-deployment.convex.cloud'
+    value: 'https://convex-v1.run/dashboard/settings/billing?plan=pro&period=monthly'
   }
 }
 
-// Code snippet
-export const CodeSnippet: Story = {
+// Verification code
+export const VerificationCode: Story = {
   args: {
-    value: 'import { api } from "./convex/_generated/api";'
+    value: 'VERIFY-789123'
+  }
+}
+
+// Share link
+export const ShareLink: Story = {
+  args: {
+    value: 'https://convex-v1.run/share/abc123xyz'
   }
 }
