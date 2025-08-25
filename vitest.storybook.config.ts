@@ -45,8 +45,31 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
       reportsDirectory: './coverage/storybook',
-      include: ["packages/ui/src/**/*.tsx", "packages/ui/src/**/*.ts"],
-      exclude: ["**/*.stories.tsx", "**/*.test.{ts,tsx}", "**/*.d.ts"]
+      include: [
+        "packages/ui/src/components/**/*.tsx"
+      ],
+      exclude: [
+        "**/*.stories.tsx",
+        "**/*.story.tsx",
+        "**/*.test.{ts,tsx}",
+        "**/*.spec.{ts,tsx}",
+        "**/*.d.ts",
+        "**/test-utils/**",
+        "**/tests/**",
+        "**/__tests__/**",
+        "**/__mocks__/**",
+        "**/node_modules/**",
+        "**/coverage/**",
+        "**/.next/**",
+        "**/.storybook/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/*.config.{js,ts,mjs,cjs}",
+        "**/utils/**",
+        "**/lib/**",
+        "**/constants/**",
+        "**/types/**"
+      ]
     }
   }
 });
