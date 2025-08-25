@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { within, userEvent, expect } from '@storybook/test'
+import { within, userEvent, expect, fn } from 'storybook/internal/test'
 import { Input } from './input'
-import { fn } from '@storybook/test'
 import { useState } from 'react'
 
 const onChange = fn()
