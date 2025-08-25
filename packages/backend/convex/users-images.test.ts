@@ -45,6 +45,26 @@ describe('User Image Management', () => {
   beforeEach(() => {
     mockAuthUserId = null
     t = convexTest(schema, mockModules)
+    
+    // Apply Blob mock for Node.js compatibility
+    if (typeof globalThis.Blob !== 'undefined') {
+      const OriginalBlob = globalThis.Blob;
+      globalThis.Blob = class MockBlob extends OriginalBlob {
+        constructor(parts?: BlobPart[], options?: BlobPropertyBag) {
+          super(parts || [], options);
+        }
+        
+        async arrayBuffer(): Promise<ArrayBuffer> {
+          // Create a simple ArrayBuffer for testing
+          const buffer = new ArrayBuffer(8);
+          const view = new Uint8Array(buffer);
+          for (let i = 0; i < 8; i++) {
+            view[i] = i;
+          }
+          return buffer;
+        }
+      } as any;
+    }
   })
 
   describe('updateUserImage Mutation', () => {
