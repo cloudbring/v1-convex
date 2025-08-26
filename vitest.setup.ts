@@ -1,5 +1,9 @@
+import React from 'react'
 import '@testing-library/jest-dom'
 import { vi, beforeAll, afterAll } from 'vitest'
+
+// Make React available globally for JSX
+globalThis.React = React
 
 // Mock console methods during tests to reduce noise
 const originalConsoleError = console.error

@@ -7,11 +7,32 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
+  esbuild: {
+    jsxInject: `import React from 'react'`
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(dirname, 'apps/app/src'),
+      '@v1/ui': path.resolve(dirname, 'packages/ui'),
+      '@v1/backend': path.resolve(dirname, 'packages/backend'),
+      '@v1/logger': path.resolve(dirname, 'packages/logger/src'),
+      '@v1/analytics': path.resolve(dirname, 'packages/analytics/src'),
+    }
+  },
   test: {
     // Modern projects configuration instead of deprecated workspace
     projects: [
       // Unit tests project
       {
+        resolve: {
+          alias: {
+            '@': path.resolve(dirname, 'apps/app/src'),
+            '@v1/ui': path.resolve(dirname, 'packages/ui'),
+            '@v1/backend': path.resolve(dirname, 'packages/backend'),
+            '@v1/logger': path.resolve(dirname, 'packages/logger/src'),
+            '@v1/analytics': path.resolve(dirname, 'packages/analytics/src'),
+          }
+        },
         test: {
           name: 'unit',
           globals: true,

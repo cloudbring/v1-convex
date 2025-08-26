@@ -124,4 +124,113 @@ describe('Analytics Client', () => {
       }).not.toThrow()
     })
   })
+
+  describe('Analytics Error Handling', () => {
+    /**
+     * Test missing environment variables gracefully
+     * Should render component even with missing client ID
+     */
+    it('should handle missing environment variables gracefully', () => {
+      // Create a temporary environment without client ID
+      const originalClientId = mockEnv.NEXT_PUBLIC_OPENPANEL_CLIENT_ID
+      delete mockEnv.NEXT_PUBLIC_OPENPANEL_CLIENT_ID
+      
+      // Should still render but may have undefined clientId
+      const { getByTestId } = render(<Provider />)
+      expect(getByTestId('openpanel-component')).toBeInTheDocument()
+      
+      // Restore for other tests
+      mockEnv.NEXT_PUBLIC_OPENPANEL_CLIENT_ID = originalClientId
+    })
+
+    /**
+     * Test track function with complex properties
+     * Should handle various data types without throwing
+     */
+    it('should handle track function with complex properties', () => {
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'development'
+      
+      expect(() => {
+        track({ 
+          event: 'complex_event',
+          nested: { deep: { value: 'test' } },
+          array: [1, 2, 3],
+          nullValue: null,
+          undefinedValue: undefined
+        })
+      }).not.toThrow()
+      
+      // Restore environment
+      mockEnv.NODE_ENV = originalEnv
+    })
+  })
+
+  describe('Environment Variable Edge Cases', () => {
+    /**
+     * Test with different environment variables
+     * Should handle various NODE_ENV values
+     */
+    it('should handle different NODE_ENV values', () => {
+      // Test with staging environment (should behave like non-production)
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'staging'
+      
+      const { getByTestId } = render(<Provider />)
+      
+      const trackScreenViews = getByTestId('track-screen-views')
+      const trackOutgoingLinks = getByTestId('track-outgoing-links')
+      
+      expect(trackScreenViews).toHaveTextContent('false')
+      expect(trackOutgoingLinks).toHaveTextContent('false')
+      
+      // Restore original environment
+      mockEnv.NODE_ENV = originalEnv
+    })
+
+    /**
+     * Test Provider with consistent configurations
+     * Should render Provider component consistently
+     */
+    it('should render Provider component consistently', () => {
+      const { getByTestId } = render(<Provider />)
+      const component = getByTestId('openpanel-component')
+      
+      // Should render the component with mocked props
+      expect(component).toBeInTheDocument()
+      
+      const clientId = getByTestId('client-id')
+      // Client ID should contain the test value from mock
+      expect(clientId).toHaveTextContent('test-client-id')
+    })
+  })
+
+  describe('Track Function Integration', () => {
+    /**
+     * Test track function basic functionality
+     * Should be exportable and callable
+     */
+    it('should be exportable and callable without errors', () => {
+      expect(typeof track).toBe('function')
+      
+      // In test environment, this should work without throwing
+      expect(() => {
+        // Track function uses useOpenPanel hook which is mocked
+        // The basic structure should work
+        track({ event: 'test_event' })
+      }).not.toThrow()
+    })
+
+    /**
+     * Test track function with various event formats
+     * Should handle different event property structures
+     */
+    it('should handle various event formats', () => {
+      expect(() => {
+        track({ event: 'simple_event' })
+        track({ event: 'event_with_props', userId: '123', action: 'click' })
+        track({ event: 'complex_event', metadata: { source: 'test' } })
+      }).not.toThrow()
+    })
+  })
 })

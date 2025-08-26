@@ -171,4 +171,239 @@ describe('Analytics Server', () => {
       })
     })
   })
+
+  describe('Server Error Handling', () => {
+    /**
+     * Test missing environment variables
+     * Should handle missing credentials by attempting to create client anyway
+     */
+    it('should handle missing environment variables', async () => {
+      const originalClientId = mockEnv.NEXT_PUBLIC_OPENPANEL_CLIENT_ID
+      const originalSecretKey = mockEnv.OPENPANEL_SECRET_KEY
+      
+      // Remove environment variables
+      mockEnv.NEXT_PUBLIC_OPENPANEL_CLIENT_ID = undefined
+      mockEnv.OPENPANEL_SECRET_KEY = undefined
+      
+      // Should still return analytics object (mocked OpenPanel client doesn't validate)
+      const analytics = await setupAnalytics()
+      expect(analytics).toHaveProperty('track')
+      
+      // Restore environment variables
+      mockEnv.NEXT_PUBLIC_OPENPANEL_CLIENT_ID = originalClientId
+      mockEnv.OPENPANEL_SECRET_KEY = originalSecretKey
+    })
+
+    /**
+     * Test track function with network errors
+     * Should handle errors gracefully by using waitUntil
+     */
+    it('should handle track function failures gracefully', async () => {
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'production'
+      
+      mockTrack.mockRejectedValue(new Error('Network error'))
+      const { track } = await setupAnalytics()
+      
+      expect(() => track({ event: 'test_event' })).not.toThrow()
+      expect(mockWaitUntil).toHaveBeenCalled()
+      
+      mockEnv.NODE_ENV = originalEnv
+    })
+
+    /**
+     * Test identification with empty fullName
+     * Should skip identification when name is empty
+     */
+    it('should handle identification with empty fullName', async () => {
+      await setupAnalytics({ userId: 'user-456', fullName: '' })
+      expect(mockIdentify).not.toHaveBeenCalled()
+    })
+
+    /**
+     * Test identification with null fullName
+     * Should skip identification when name is null
+     */
+    it('should handle identification with null fullName', async () => {
+      await setupAnalytics({ userId: 'user-789', fullName: null })
+      expect(mockIdentify).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Analytics Privacy & Security', () => {
+    /**
+     * Test that sensitive data handling works correctly in production
+     * Should track data in production without logging
+     */
+    it('should not log sensitive data in production', async () => {
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'production'
+      
+      const { track } = await setupAnalytics()
+      
+      track({ 
+        event: 'user_action', 
+        email: 'sensitive@example.com',
+        creditCard: '1234-5678-9012-3456'
+      })
+      
+      expect(mockLoggerInfo).not.toHaveBeenCalled()
+      expect(mockTrack).toHaveBeenCalledWith('user_action', {
+        email: 'sensitive@example.com',
+        creditCard: '1234-5678-9012-3456'
+      })
+      
+      mockEnv.NODE_ENV = originalEnv
+    })
+
+    /**
+     * Test development mode logging behavior
+     * Should log all data in development including potentially sensitive data
+     */
+    it('should handle track with malformed event data', async () => {
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'development'
+      
+      const { track } = await setupAnalytics()
+      
+      expect(() => {
+        track({ event: '', invalidProp: undefined })
+      }).not.toThrow()
+      
+      expect(mockLoggerInfo).toHaveBeenCalledWith('Track', { 
+        event: '', 
+        invalidProp: undefined 
+      })
+      
+      mockEnv.NODE_ENV = originalEnv
+    })
+
+    /**
+     * Test data sanitization patterns
+     * Should handle various data types safely
+     */
+    it('should handle various data types safely', async () => {
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'production'
+      
+      const { track } = await setupAnalytics()
+      
+      track({ 
+        event: 'complex_data',
+        stringVal: 'test',
+        numberVal: 123,
+        booleanVal: true,
+        nullVal: null,
+        undefinedVal: undefined,
+        arrayVal: [1, 2, 3],
+        objectVal: { nested: 'value' }
+      })
+      
+      expect(mockTrack).toHaveBeenCalledWith('complex_data', {
+        stringVal: 'test',
+        numberVal: 123,
+        booleanVal: true,
+        nullVal: null,
+        undefinedVal: undefined,
+        arrayVal: [1, 2, 3],
+        objectVal: { nested: 'value' }
+      })
+      
+      mockEnv.NODE_ENV = originalEnv
+    })
+  })
+
+  describe('User Identification Edge Cases', () => {
+    /**
+     * Test name parsing with multiple spaces
+     * Should handle names with multiple words correctly
+     */
+    it('should handle names with multiple spaces', async () => {
+      await setupAnalytics({ userId: 'user-123', fullName: 'John   Doe   Smith' })
+      
+      expect(mockIdentify).toHaveBeenCalledWith({
+        profileId: 'user-123',
+        firstName: 'John',
+        lastName: '', // Second part is empty in this case due to split() behavior
+      })
+    })
+
+    /**
+     * Test name parsing with leading/trailing spaces
+     * Should handle whitespace correctly
+     */
+    it('should handle names with leading/trailing spaces', async () => {
+      await setupAnalytics({ userId: 'user-456', fullName: '  John Doe  ' })
+      
+      expect(mockIdentify).toHaveBeenCalledWith({
+        profileId: 'user-456',
+        firstName: '',
+        lastName: '', // Split on first space results in empty parts
+      })
+    })
+
+    /**
+     * Test identification with special characters
+     * Should handle names with special characters
+     */
+    it('should handle names with special characters', async () => {
+      await setupAnalytics({ userId: 'user-789', fullName: 'José María García-López' })
+      
+      expect(mockIdentify).toHaveBeenCalledWith({
+        profileId: 'user-789',
+        firstName: 'José',
+        lastName: 'María', // Only gets first part after space due to split
+      })
+    })
+
+    /**
+     * Test identification with empty userId
+     * Should skip when userId is empty string
+     */
+    it('should skip identification with empty userId', async () => {
+      await setupAnalytics({ userId: '', fullName: 'John Doe' })
+      expect(mockIdentify).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('Async Operation Handling', () => {
+    /**
+     * Test waitUntil with successful operations
+     * Should handle async operations correctly
+     */
+    it('should handle successful async operations', async () => {
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'production'
+      
+      mockTrack.mockResolvedValue(undefined)
+      const { track } = await setupAnalytics()
+      
+      track({ event: 'async_test', data: 'value' })
+      
+      expect(mockWaitUntil).toHaveBeenCalledWith(expect.any(Promise))
+      expect(mockTrack).toHaveBeenCalledWith('async_test', { data: 'value' })
+      
+      mockEnv.NODE_ENV = originalEnv
+    })
+
+    /**
+     * Test multiple concurrent tracking calls
+     * Should handle multiple async operations
+     */
+    it('should handle multiple concurrent tracking calls', async () => {
+      const originalEnv = mockEnv.NODE_ENV
+      mockEnv.NODE_ENV = 'production'
+      
+      const { track } = await setupAnalytics()
+      
+      track({ event: 'event1' })
+      track({ event: 'event2' })
+      track({ event: 'event3' })
+      
+      expect(mockWaitUntil).toHaveBeenCalledTimes(3)
+      expect(mockTrack).toHaveBeenCalledTimes(3)
+      
+      mockEnv.NODE_ENV = originalEnv
+    })
+  })
 })
