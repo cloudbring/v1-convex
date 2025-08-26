@@ -70,12 +70,12 @@
       "dependsOn": ["build:storybook"],
       "cache": false
     },
-    "clean": {
-      "cache": false
-    },
     "dev": {
       "inputs": ["$TURBO_DEFAULT$", ".env"],
       "persistent": true,
+      "cache": false
+    },
+    "clean": {
       "cache": false
     },
     "lint": {
