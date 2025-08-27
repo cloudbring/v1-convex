@@ -8,6 +8,8 @@ This project uses **Vitest** as its test runner, NOT Bun's built-in test runner.
 - Bun's test runner is **incompatible** with our testing setup
 - Using `bun test` will break convex-test, @amiceli/vitest-cucumber, and coverage reporting
 
+> Canonical reference: See `AGENTS.md` at the repo root. That document is the single source of truth for test commands, Vitest projects, Turbo tasks, and CI usage. This page summarizes key points and examples.
+
 ### Always Use These Commands
 
 ```bash
@@ -492,8 +494,8 @@ export const Loading: Story = {
     "build": "turbo run build",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:unit": "vitest run --mode=unit",
-    "test:integration": "vitest run --mode=integration",
+  "test:unit": "vitest run --project unit",
+  "test:integration": "bun -C packages/backend run test",
     "test:bdd": "vitest run --config vitest.bdd.config.ts",
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",

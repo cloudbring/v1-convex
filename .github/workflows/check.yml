@@ -17,3 +17,5 @@ jobs:
         run: bun run lint
       - name: 🪐 Check TypeScript
         run: bun run typecheck
+      - name: 🧪 Run unit tests with coverage
+        run: bun run test:coverage

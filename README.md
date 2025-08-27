@@ -30,6 +30,16 @@ This repository is designed as a **GitHub Template** to quickly bootstrap new Sa
 4. **Configure preview deployments** - Automated Vercel preview testing on every PR (see [Vercel Preview Setup](./docs/vercel-preview-setup.md))
 5. **Customize and ship** - All the foundation is ready, focus on building your unique features
 
+### 🧪 Testing
+
+See `AGENTS.md` for the canonical testing guide (commands, Vitest projects, Turbo tasks, and CI). Quick commands:
+
+- Unit: `bun run test:unit` or `bun run test:coverage`
+- Backend (Convex): `bun run test:backend`
+- BDD: `bun run test:bdd`
+- E2E (smoke): `bun run test:e2e` (full: `bun run test:e2e:full`)
+- Storybook tests: `bun run test:storybook`
+
 ### ✨ Template Features
 
 - 📦 **Complete Testing Suite**: Unit, integration, E2E, and component testing ready to go
