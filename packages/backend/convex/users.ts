@@ -68,7 +68,7 @@ export const updateUserImage = mutation({
     if (!userId) {
       return;
     }
-    ctx.db.patch(userId, { imageId: args.imageId });
+    await ctx.db.patch(userId, { imageId: args.imageId });
   },
 });
 
@@ -79,7 +79,13 @@ export const removeUserImage = mutation({
     if (!userId) {
       return;
     }
-    ctx.db.patch(userId, { imageId: undefined, image: undefined });
+    // Get the current user to update it
+    const user = await ctx.db.get(userId);
+    if (user) {
+      // Create a new user object without the imageId field
+      const { imageId, ...userWithoutImage } = user;
+      await ctx.db.replace(userId, userWithoutImage);
+    }
   },
 });
 

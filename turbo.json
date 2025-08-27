@@ -24,14 +24,58 @@
       "cache": false
     },
     "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "cache": true,
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "convex/**/*.ts",
+        "**/*.{test,spec}.{ts,tsx}",
+        "**/*.feature",
+        "**/*.steps.ts",
+        "**/*.step.ts",
+        "**/vitest*.config.{ts,js}",
+        "**/.storybook/**"
+      ]
+    },
+    "test:unit": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/unit/**"],
+      "cache": true
+    },
+    "test:integration": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/integration/**"],
+      "cache": true
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
       "cache": false
     },
-    "clean": {
+    "test:e2e": {
+      "dependsOn": ["build"],
+      "cache": false,
+      "outputs": ["test-results/**", "playwright-report/**"]
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true
+    },
+    "build:storybook": {
+      "dependsOn": ["^build"],
+      "outputs": ["storybook-static/**"]
+    },
+    "test:storybook": {
+      "dependsOn": ["build:storybook"],
       "cache": false
     },
     "dev": {
       "inputs": ["$TURBO_DEFAULT$", ".env"],
       "persistent": true,
+      "cache": false
+    },
+    "clean": {
       "cache": false
     },
     "lint": {

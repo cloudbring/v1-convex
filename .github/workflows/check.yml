@@ -3,17 +3,110 @@ on:
   push:
     paths:
       - '**'
+  pull_request:
 jobs:
-  check:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.1.26
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
       - name: 🔦 Run linter
         run: bun run lint
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.1.26
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
       - name: 🪐 Check TypeScript
         run: bun run typecheck
+
+  unit_coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.1.26
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: 🧪 Run unit + storybook coverage
+        run: bun run test:coverage
+
+  backend_coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.1.26
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Ensure backend uses Vitest v3
+        run: |
+          rm -rf packages/backend/node_modules
+          bun install --frozen-lockfile
+      - name: 🧪 Run backend coverage
+        run: bun run test:backend
+
+  e2e_smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.1.26
+      - name: Install dependencies
+        run: |
+          bun install --frozen-lockfile
+          bunx playwright install chromium --with-deps
+      - name: 🚬 Run E2E smoke
+        run: bun run test:e2e
+
+  e2e_full_if_label:
+    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'run-e2e-full') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.1.26
+      - name: Install dependencies
+        run: |
+          bun install --frozen-lockfile
+          bunx playwright install --with-deps chromium
+      - name: 🧪 Run full E2E suite (chromium)
+        env:
+          BASE_URL: ${{ vars.DEFAULT_BASE_URL || '' }}
+        run: bun run test:e2e:full
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+      - name: Comment PR with E2E results link
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${{ toJson(github.server_url) }}/${{ toJson(github.repository) }}/actions/runs/${{ github.run_id }}`.replaceAll('"','');
+            const body = [
+              `🧪 Full E2E suite ran in Check workflow (label: run-e2e-full).`,
+              `- Run: ${runUrl}`,
+              'Artifacts include the Playwright HTML report.'
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body,
+            });

@@ -20,6 +20,34 @@ Everything you need to build a production ready SaaS, it's an opinionated stack
 using Convex and the latest Next.js framework, a monorepo with a focus on code
 reuse and best practices that will grow with your business.
 
+## 🚀 Using This Template
+
+This repository is designed as a **GitHub Template** to quickly bootstrap new SaaS projects:
+
+1. **[Use This Template](https://github.com/cloudbring/v1-convex/generate)** - Click to create a new repository from this template
+2. **Clone your new repository** and follow the [Getting Started](#getting-started) guide
+3. **Set up testing** - Comprehensive test suite included with Vitest, Playwright, and Storybook
+4. **Configure preview deployments** - Automated Vercel preview testing on every PR (see [Vercel Preview Setup](./docs/vercel-preview-setup.md))
+5. **Customize and ship** - All the foundation is ready, focus on building your unique features
+
+### 🧪 Testing
+
+See `AGENTS.md` for the canonical testing guide (commands, Vitest projects, Turbo tasks, and CI). Quick commands:
+
+- Unit: `bun run test:unit` or `bun run test:coverage`
+- Backend (Convex): `bun run test:backend`
+- BDD: `bun run test:bdd`
+- E2E (smoke): `bun run test:e2e` (full: `bun run test:e2e:full`)
+- Storybook tests: `bun run test:storybook`
+
+### ✨ Template Features
+
+- 📦 **Complete Testing Suite**: Unit, integration, E2E, and component testing ready to go
+- 🚀 **CI/CD Ready**: GitHub Actions workflows for testing and deployment
+- 🔍 **Preview Testing**: Automatic testing of Vercel preview deployments
+- 📚 **Comprehensive Docs**: Setup guides, testing patterns, and best practices
+- 🛠 **Developer Experience**: ESLint, Prettier, TypeScript, and more configured
+
 ## What's included
 
 [Convex](https://convex.dev/) - Authentication, database, storage, background jobs, validated server actions, cache, rate limiting<br>
