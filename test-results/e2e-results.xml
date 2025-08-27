@@ -1,8 +1,8 @@
-<testsuites id="" name="" tests="2" failures="0" skipped="1" errors="0" time="6.022063">
-<testsuite name="smoke/playwright-health.spec.ts" timestamp="2025-08-25T06:25:01.028Z" hostname="chromium" tests="2" failures="0" skipped="1" time="6.61" errors="0">
-<testcase name="Playwright Setup Verification › should verify Playwright is working" classname="smoke/playwright-health.spec.ts" time="3.327">
+<testsuites id="" name="" tests="2" failures="0" skipped="1" errors="0" time="1.265003">
+<testsuite name="smoke/playwright-health.spec.ts" timestamp="2025-08-27T06:05:56.464Z" hostname="chromium" tests="2" failures="0" skipped="1" time="0.964" errors="0">
+<testcase name="Playwright Setup Verification › should verify Playwright is working" classname="smoke/playwright-health.spec.ts" time="0.749">
 </testcase>
-<testcase name="Playwright Setup Verification › should verify our app server can be reached" classname="smoke/playwright-health.spec.ts" time="3.283">
+<testcase name="Playwright Setup Verification › should verify our app server can be reached" classname="smoke/playwright-health.spec.ts" time="0.215">
 <properties>
 <property name="skip" value="Local server not available">
 </property>

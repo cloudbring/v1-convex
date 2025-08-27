@@ -25,7 +25,8 @@ describe('Switch Component', () => {
     
     const switchElement = screen.getByTestId('switch')
     expect(switchElement).toBeInTheDocument()
-    expect(switchElement).toHaveRole('switch')
+    // Assert role via query to avoid custom matcher dependency
+    expect(screen.getByRole('switch')).toBe(switchElement)
   })
 
   /**
