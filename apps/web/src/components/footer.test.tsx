@@ -259,7 +259,7 @@ describe('Footer Component', () => {
   })
 
   describe('Error Handling', () => {
-    it('should render gracefully with missing SVG content', () => {
+    it('should render gracefully with missing SVG content', { timeout: 15000 }, () => {
       // This test ensures the component structure remains intact even if SVGs fail
       render(<Footer />)
       

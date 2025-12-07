@@ -1,7 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 echo "Running pre-push tests (coverage)..."
 bun run test:coverage || exit 1
 echo "Pre-push tests passed."
-

@@ -40,9 +40,10 @@
     "lint:repo": "bunx sherif@latest",
     "lint:repo:fix": "bunx sherif@latest --fix",
     "typecheck": "turbo typecheck",
-    "prepare": "husky"
+    "prepare": "husky install"
   },
   "devDependencies": {
+    "husky": "^9.1.6",
     "@amiceli/vitest-cucumber": "^5.1.2",
     "@axe-core/playwright": "^4.10.2",
     "@biomejs/biome": "1.8.3",

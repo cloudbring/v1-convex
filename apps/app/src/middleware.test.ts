@@ -24,9 +24,10 @@ vi.mock('next-international/middleware', () => ({
 const mockConsoleLog = vi.spyOn(console, 'log').mockImplementation(() => {})
 
 describe('Middleware', () => {
-  let middlewareHandler: (request: NextRequest, context: { convexAuth: any }) => Promise<any>
+  type ConvexAuthMock = { isAuthenticated: () => Promise<boolean> }
+  let middlewareHandler: (request: NextRequest, context: { convexAuth: ConvexAuthMock }) => Promise<Response>
   let mockRequest: NextRequest
-  let mockConvexAuth: { isAuthenticated: () => Promise<boolean> }
+  let mockConvexAuth: ConvexAuthMock
   const init = async () => {
     mockConvexAuthNextjsMiddleware.mockImplementation((handler) => {
       middlewareHandler = handler
